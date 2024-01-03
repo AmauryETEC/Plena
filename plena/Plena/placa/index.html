@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Ônibus</title>
+    <!-- Adicione os links para o Bootstrap CSS e o Bootstrap JS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap" rel="stylesheet">
+</head>
+
+<style>
+    body {
+        background-color: #333;
+        /* Cor de fundo escura */
+        color: #fff;
+        /* Cor do texto branco */
+    }
+
+    h1 {
+        font-family: 'PT Sans', sans-serif;
+    }
+
+    p {
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .container {
+        background-color: #444;
+        /* Cor de fundo do container */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        /* Sombra suave */
+    }
+
+    h1 {
+        color: #ffffff;
+        /* Cor azul */
+    }
+
+    .form-group label {
+        color: #ffffff;
+        /* Cor azul para rótulos */
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        /* Cor azul para botão */
+        border-color: #007bff;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        /* Cor da borda quando em foco */
+        box-shadow: 0 0 0 0.25rem rgba(0, 123, 255, 0.25);
+        /* Efeito de destaque */
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        /* Cor azul mais escura no hover */
+    }
+
+    p {
+        font-size: 15px;
+    }
+</style>
+
+<body>
+    <div class="container mt-5 col-md-6">
+        <h1>Consulta de frota</h1>
+        <div class="form-group">
+            <label for="numeroOnibus">Digite o número da frota:</label>
+            <input type="text" class="form-control" id="numeroOnibus" placeholder="Número da frota">
+        </div>
+        <button class="btn  btn-outline-primary" id="consultarBtn">Consultar Frota</button>
+        <div class="mt-3">
+            <p id="resultado"></p>
+        </div>
+
+        <!-- Novo formulário para consultar a placa a partir do número -->
+        <div class="form-group mt-4">
+            <label for="placaOnibus">Digite a placa da frota:</label>
+            <input type="text" class="form-control" id="placaOnibus" placeholder="Placa da frota">
+        </div>
+        <button class="btn  btn-outline-primary" id="consultarPlacaBtn">Consultar Placa</button>
+        <div class="mt-3">
+            <p id="resultadoPlaca"></p>
+        </div>
+    </div>
+
+    <script>
+        // Dados fictícios de ônibus (pode ser substituído por um banco de dados ou serviço)
+        const onibus = {
+            490: { placa: "EOE-6237", tipo: "Ônibus" },
+            514: { placa: "CUA-7399", tipo: "Ônibus" },
+            515: { placa: "ETU-8104", tipo: "Ônibus" },
+            533: { placa: "FSD-2J09", tipo: "Ônibus" },
+            534: { placa: "FQP-8F45", tipo: "Ônibus" },
+            541: { placa: "EFV5C49", tipo: "Ônibus" },
+            545: { placa: "JDR-7E44", tipo: "Ônibus" },
+            546: { placa: "JJJ-5G90", tipo: "Ônibus" },
+            547: { placa: "JJJ-9D50", tipo: "Ônibus" },
+            548: { placa: "OVQ-2C20", tipo: "Ônibus" },
+            549: { placa: "FSZ-OA75", tipo: "Ônibus" },
+            550: { placa: "FSD-3B01", tipo: "Ônibus" },
+            551: { placa: "FQN-7E60", tipo: "Ônibus" },
+            552: { placa: "FT0-3A17", tipo: "Ônibus" },
+            553: { placa: "FTI-6B80", tipo: "Ônibus" },
+            554: { placa: "FSN-8J10", tipo: "Ônibus" },
+            555: { placa: "FQV-2C40", tipo: "Ônibus" },
+            556: { placa: "FTH-5159", tipo: "Ônibus" },
+            557: { placa: "FSD-6J19", tipo: "Ônibus" },
+            558: { placa: "FSI-1H75", tipo: "Ônibus" },
+            559: { placa: "FRN-0A58", tipo: "Ônibus" },
+            560: { placa: "FTQ-8G90", tipo: "Ônibus" },
+            561: { placa: "AYT-3D92", tipo: "Ônibus" },
+            562: { placa: "AYT-3D93", tipo: "Ônibus" },
+            563: { placa: "JJC-8J49", tipo: "Ônibus" },
+            564: { placa: "JDY-8F85", tipo: "Ônibus" },
+            566: { placa: "FSA-3D76", tipo: "Ônibus" },
+            567: { placa: "FRE-5F93", tipo: "Ônibus" },
+            221140: { placa: "ESW-7994", tipo: "Ônibus" },
+            24020: { placa: "FYZ2G02", tipo: "Ônibus" },
+            24120: { placa: "FUO-3H35", tipo: "Ônibus" },
+            24220: { placa: "GGZ-5B77", tipo: "Ônibus" },
+            24320: { placa: "FWE-8B08", tipo: "Ônibus" },
+            24420: { placa: "FZZ-4H95", tipo: "Ônibus" },
+            24520: { placa: "GFI-9G97", tipo: "Ônibus" },
+            24620: { placa: "FGFG-3J63", tipo: "Ônibus" },
+            30962: { placa: "EGK-0775", tipo: "Ônibus" },
+            30968: { placa: "EGK-0805", tipo: "Ônibus" },
+            30971: { placa: "FTD-9776", tipo: "Ônibus" },
+            30972: { placa: "FTY-0666", tipo: "Ônibus" },
+            30973: { placa: "FTA-6746", tipo: "Ônibus" },
+            30980: { placa: "CSK-3875", tipo: "Ônibus" },
+            30984: { placa: "KKR-6050", tipo: "Ônibus" },
+            30988: { placa: "PES-0286", tipo: "Ônibus" },
+            4500: { placa: "CUA5C93", tipo: "Ônibus" },
+            520: { placa: "FWV-8C29", tipo: "Micro-ônibus" },
+            522: { placa: "FRE-3B19", tipo: "Micro-ônibus" },
+            5000: { placa: "AZZ-2E84", tipo: "Van" },
+            216: { placa: "GFF-3A14", tipo: "Van" },
+            217: { placa: "GHH-2E29", tipo: "Van" }
+        };
+
+        // Função para classificar o tipo de veículo (ônibus, micro-ônibus, van)
+        function classificarVeiculo(numeroOnibus) {
+            // Verificar se o número está na lista de micro-ônibus
+            if (onibus[numeroOnibus] && onibus[numeroOnibus].tipo === "Micro-ônibus") {
+                return "Micro-ônibus";
+            }
+
+            // Verificar se o número está na lista de vans
+            if (onibus[numeroOnibus] && onibus[numeroOnibus].tipo === "Van") {
+                return "Van";
+            }
+
+            // Se não for micro-ônibus nem van, considerar como ônibus
+            return "Ônibus";
+        }
+
+        // Função para consultar o ônibus e exibir o resultado
+        document.getElementById("consultarBtn").addEventListener("click", () => {
+            const numeroOnibus = document.getElementById("numeroOnibus").value;
+            const resultadoElement = document.getElementById("resultado");
+
+            if (onibus[numeroOnibus]) {
+                const { placa } = onibus[numeroOnibus];
+                const tipoVeiculo = classificarVeiculo(numeroOnibus);
+                resultadoElement.innerHTML = `Placa: ${placa}<br>Tipo: ${tipoVeiculo}`;
+            } else {
+                resultadoElement.innerHTML = "Frota não encontrada.";
+            }
+        });
+
+        // Função para consultar a placa do ônibus a partir do número
+        document.getElementById("consultarPlacaBtn").addEventListener("click", () => {
+            const placaOnibus = document.getElementById("placaOnibus").value.toUpperCase();
+            const resultadoPlacaElement = document.getElementById("resultadoPlaca");
+
+            for (const numeroOnibus in onibus) {
+                if (onibus[numeroOnibus].placa === placaOnibus) {
+                    const tipoVeiculo = classificarVeiculo(numeroOnibus);
+                    resultadoPlacaElement.innerHTML = `Número do ônibus: ${numeroOnibus}<br>Tipo: ${tipoVeiculo}`;
+                    return;
+                }
+            }
+
+            resultadoPlacaElement.innerHTML = "Placa não encontrada.";
+        });
+    </script>
+</body>
+
+</html>
